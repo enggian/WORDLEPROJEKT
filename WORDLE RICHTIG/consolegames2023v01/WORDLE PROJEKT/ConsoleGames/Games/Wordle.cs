@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ConsoleGames.Games; // here use name of your project
 
@@ -20,17 +23,29 @@ public class Wordle : Game
 
     public override Score Play(int level)
     {
-
-
         bool gameover = false;
         string input = null;
         string secretWord = readsecretword(level);
+        int xpos = 0;
+        int ypos = 0;
 
+
+        // Class um zu Zählen wie oft ein Buchstabe in Wort ist
+        Dictionary<char, int> letterFrequencies = new Dictionary<char, int>();
+        foreach (char c in secretWord)
+        {
+            if (letterFrequencies.ContainsKey(c))
+                letterFrequencies[c]++;
+            else
+                letterFrequencies[c] = 1;
+        }
 
         while (!gameover)
         {
+
+            //Console.SetWindowSize(1220, 1220);
             Console.ResetColor();
-            Console.WriteLine(secretWord);
+            Console.WriteLine(secretWord); // Nur zum Testen um echten Spiel dann nichtmeht
             Console.WriteLine("Versuche das Wort zu erraten!");
             input = Console.ReadLine();
             input = input.ToUpper();
@@ -40,66 +55,49 @@ public class Wordle : Game
             {
                 Console.WriteLine("Glückwunsch du hast das Wort " + secretWord + " richtig erraten");
                 gameover = true;
-
-
             }
-            else if (input != secretWord)
+            else
             {
+                // Wie oft der Buchstabe verwendet wird in temporäre Variable
+                Dictionary<char, int> tempFrequencies = new Dictionary<char, int>(letterFrequencies);
+
                 for (int bStab = 0; bStab < secretWord.Length; bStab++)
                 {
-
-
-                    if (secretWord[bStab] == input[bStab]) // Ob Buchstabe an gleicher Stelle ist
+                    if (secretWord[bStab] == input[bStab]) // Richtige Positon
                     {
-                        Display.DrawChar('a', ConsoleColor.Red);
-                        Console.BackgroundColor = ConsoleColor.Green;
-                        Console.Write(input[bStab]);
-
-                        gameover = false;
+                        Display.DrawChar(input[bStab], ConsoleColor.Green, xpos, ypos);
+                        tempFrequencies[input[bStab]]--; // Zähler runtermachen
 
                     }
                     else
                     {
-                        if (secretWord.Contains(input[bStab])) // wenn Buchstabe dabei ist, aber an der Falschen stelle
+                        if (secretWord.Contains(input[bStab]) && tempFrequencies[input[bStab]] > 0) // Falsche Position aber Buchstabe im Wort
                         {
-
-                            Console.BackgroundColor = ConsoleColor.Yellow;
-                            Console.Write(input[bStab]);
+                           // Console.BackgroundColor = ConsoleColor.Yellow;
+                            Display.DrawChar(input[bStab], ConsoleColor.Yellow, xpos, ypos);
+                            tempFrequencies[input[bStab]]--; 
 
                         }
-                        else // wenn Buchstabe nicht dabei ist
+                        else // Buchstabe nicht im Wort oder Buchstabe schon zugeordnet
                         {
-                            Console.BackgroundColor = ConsoleColor.Red;
-                            Console.Write(input[bStab]);
+                            //Console.BackgroundColor = ConsoleColor.Red;
+                            Display.DrawChar(input[bStab], ConsoleColor.Red, xpos, ypos);
+                            //Console.Write(input[bStab]);
 
                         }
-                        if (bStab == secretWord.Length - 1) // Zeilen Abstand
-                        {
-                            Console.WriteLine("");
-
-                        }
-
-
-
-
-
                     }
 
+                    if (bStab == secretWord.Length - 1) // Zeilen Abstand
+                    {
+                        Console.WriteLine("");
+                    }
                 }
-
-
-
-
-
-
             }
-
-
         }
 
         return new Score();
-
     }
+
 
 
     private string readsecretword(int level)
@@ -133,7 +131,7 @@ public class Wordle : Game
     }
 
 
-
+    
 
 
 
@@ -145,11 +143,18 @@ public class Wordle : Game
 
     class Display
     {
-        internal static void DrawChar(char c, ConsoleColor col)
+        internal static void DrawChar(char c, ConsoleColor col, int xpos, int ypos)
         {
 
+            Console.ForegroundColor = col;
+            Console.SetCursorPosition(xpos, ypos);
             Console.WriteLine(font[(int)c - 65]);
-            Console.WriteLine((int)c);
+            Console.ResetColor();
+            xpos = xpos + 100;
+            ypos = ypos + 100;
+
+
+
 
         }
         static string[] font =
