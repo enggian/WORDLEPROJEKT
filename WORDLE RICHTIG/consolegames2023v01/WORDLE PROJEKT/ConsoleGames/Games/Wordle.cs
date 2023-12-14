@@ -26,9 +26,9 @@ public class Wordle : Game
         bool gameover = false;
         string input = null;
         string secretWord = readsecretword(level);
-        int xpos = 0;
-        int ypos = 0;
-
+        int xpos = 10;
+        int ypos = 5;
+        Console.WriteLine("Versuche das Wort zu erraten!");
 
         // Class um zu Zählen wie oft ein Buchstabe in Wort ist
         Dictionary<char, int> letterFrequencies = new Dictionary<char, int>();
@@ -40,20 +40,23 @@ public class Wordle : Game
                 letterFrequencies[c] = 1;
         }
 
+
         while (!gameover)
         {
-
-            //Console.SetWindowSize(1220, 1220);
+            Console.SetWindowSize(1220, 1220);
             Console.ResetColor();
             Console.WriteLine(secretWord); // Nur zum Testen um echten Spiel dann nichtmeht
-            Console.WriteLine("Versuche das Wort zu erraten!");
             input = Console.ReadLine();
             input = input.ToUpper();
 
 
             if (input == secretWord)
             {
-                Console.WriteLine("Glückwunsch du hast das Wort " + secretWord + " richtig erraten");
+                for (int i = 0; i < secretWord.Length; i++ )
+                Display.DrawChar(input[i], ConsoleColor.Green, ref xpos, ref ypos);
+                Console.WriteLine("Glückwunsch du hast das Wort " + secretWord + " richtig erraten drücke eine beliebige Taste um Fortzufahren!");
+
+                Console.ReadKey();
                 gameover = true;
             }
             else
@@ -63,25 +66,26 @@ public class Wordle : Game
 
                 for (int bStab = 0; bStab < secretWord.Length; bStab++)
                 {
+
                     if (secretWord[bStab] == input[bStab]) // Richtige Positon
                     {
-                        Display.DrawChar(input[bStab], ConsoleColor.Green, xpos, ypos);
+                        Display.DrawChar(input[bStab], ConsoleColor.Green, ref xpos, ref ypos);
                         tempFrequencies[input[bStab]]--; // Zähler runtermachen
 
                     }
                     else
                     {
-                        if (secretWord.Contains(input[bStab]) && tempFrequencies[input[bStab]] > 0) // Falsche Position aber Buchstabe im Wort
+                        if (secretWord.Contains(input[bStab]) && tempFrequencies[input[bStab]] > 1) // Falsche Position aber Buchstabe im Wort
                         {
                            // Console.BackgroundColor = ConsoleColor.Yellow;
-                            Display.DrawChar(input[bStab], ConsoleColor.Yellow, xpos, ypos);
+                            Display.DrawChar(input[bStab], ConsoleColor.DarkYellow, ref xpos, ref ypos);
                             tempFrequencies[input[bStab]]--; 
 
                         }
                         else // Buchstabe nicht im Wort oder Buchstabe schon zugeordnet
                         {
                             //Console.BackgroundColor = ConsoleColor.Red;
-                            Display.DrawChar(input[bStab], ConsoleColor.Red, xpos, ypos);
+                            Display.DrawChar(input[bStab], ConsoleColor.Red, ref xpos, ref ypos);
                             //Console.Write(input[bStab]);
 
                         }
@@ -138,20 +142,20 @@ public class Wordle : Game
 
 
 
-
+    
 
 
     class Display
     {
-        internal static void DrawChar(char c, ConsoleColor col, int xpos, int ypos)
+        internal static void DrawChar(char c, ConsoleColor col, ref int xpos, ref int ypos)
         {
 
             Console.ForegroundColor = col;
             Console.SetCursorPosition(xpos, ypos);
             Console.WriteLine(font[(int)c - 65]);
             Console.ResetColor();
-            xpos = xpos + 100;
-            ypos = ypos + 100;
+            xpos += 100;
+            ypos += 100;
 
 
 
