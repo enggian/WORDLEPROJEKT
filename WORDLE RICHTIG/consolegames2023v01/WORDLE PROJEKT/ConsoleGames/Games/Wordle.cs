@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
@@ -26,8 +27,10 @@ public class Wordle : Game
         bool gameover = false;
         string input = null;
         string secretWord = readsecretword(level);
-        int xpos = 10;
-        int ypos = 5;
+        Point point = new Point(5, 5);
+
+
+
         Console.WriteLine("Versuche das Wort zu erraten!");
 
         // Class um zu Zählen wie oft ein Buchstabe in Wort ist
@@ -45,7 +48,7 @@ public class Wordle : Game
         {
             Console.SetWindowSize(1220, 1220);
             Console.ResetColor();
-            Console.WriteLine(secretWord); // Nur zum Testen um echten Spiel dann nichtmeht
+           // Console.WriteLine(secretWord); // Nur zum Testen um echten Spiel dann nichtmeht
             input = Console.ReadLine();
             input = input.ToUpper();
 
@@ -53,7 +56,7 @@ public class Wordle : Game
             if (input == secretWord)
             {
                 for (int i = 0; i < secretWord.Length; i++ )
-                Display.DrawChar(input[i], ConsoleColor.Green, ref xpos, ref ypos);
+              //  DrawChar(input[i], ConsoleColor.Green, ref point);
                 Console.WriteLine("Glückwunsch du hast das Wort " + secretWord + " richtig erraten drücke eine beliebige Taste um Fortzufahren!");
 
                 Console.ReadKey();
@@ -69,25 +72,28 @@ public class Wordle : Game
 
                     if (secretWord[bStab] == input[bStab]) // Richtige Positon
                     {
-                        Display.DrawChar(input[bStab], ConsoleColor.Green, ref xpos, ref ypos);
+                       // DrawChar(input[bStab], ConsoleColor.Green, ref point);
                         tempFrequencies[input[bStab]]--; // Zähler runtermachen
-
+                       // point.X += 20;
+                       // point.Y += 20;
                     }
                     else
                     {
                         if (secretWord.Contains(input[bStab]) && tempFrequencies[input[bStab]] > 1) // Falsche Position aber Buchstabe im Wort
                         {
                            // Console.BackgroundColor = ConsoleColor.Yellow;
-                            Display.DrawChar(input[bStab], ConsoleColor.DarkYellow, ref xpos, ref ypos);
-                            tempFrequencies[input[bStab]]--; 
-
+                            DrawChar(input[bStab], ConsoleColor.DarkYellow, ref point);
+                            tempFrequencies[input[bStab]]--;
+                           // point.X += 20;
+                           // point.Y += 20;
                         }
                         else // Buchstabe nicht im Wort oder Buchstabe schon zugeordnet
                         {
                             //Console.BackgroundColor = ConsoleColor.Red;
-                            Display.DrawChar(input[bStab], ConsoleColor.Red, ref xpos, ref ypos);
+                            DrawChar(input[bStab], ConsoleColor.Red, ref point);
                             //Console.Write(input[bStab]);
-
+                           // point.X += 20;
+                           // point.Y += 20;
                         }
                     }
 
@@ -135,38 +141,50 @@ public class Wordle : Game
     }
 
 
-    
 
 
 
-
-
-
-    
-
-
-    class Display
-    {
-        internal static void DrawChar(char c, ConsoleColor col, ref int xpos, ref int ypos)
+        private Point DrawChar(char c, ConsoleColor col, ref Point point)
         {
 
+
+
             Console.ForegroundColor = col;
-            Console.SetCursorPosition(xpos, ypos);
-            Console.WriteLine(font[(int)c - 65]);
+
+           // Console.SetCursorPosition(point.X, point.Y);
+
+           // Console.Write(font[(int)c - 65]);
+
             Console.ResetColor();
-            xpos += 100;
-            ypos += 100;
 
 
 
+        // Console.Write(font[(int)c-65]);
 
+        string letter = (font[(int)c - 65]);
+        string[] array1 = letter.Split('\n');
+        for (int i = 0; i < array1.Length; i++)
+        {
+            Console.SetCursorPosition(point.X, point.Y);
+            Console.WriteLine(array1[i]);
+            point.Y++;
         }
+
+
+
+
+
+
+
+
+            return point;
+        }
+
+
         static string[] font =
         {
 
-                        @"
-
- .----------------.   
+@" .----------------.   
 | .--------------. |  
 | |      __      | |  
 | |     /  \     | |  
@@ -176,17 +194,9 @@ public class Wordle : Game
 | ||____|  |____|| |  
 | |              | |  
 | '--------------' |  
- '----------------'   
-
-",
-
-@"
-
-
-
-
- .----------------. 
-| .--------------. |
+ '----------------'  ",
+ @"
+ .--------------. |
 | |   ______     | |
 | |  |_   _ \    | |
 | |    | |_) |   | |
@@ -195,8 +205,7 @@ public class Wordle : Game
 | |  |_______/   | |
 | |              | |
 | '--------------' |
- '----------------' 
-",
+ '----------------' ",
 @"
  .----------------.
 | .--------------. |
@@ -208,8 +217,7 @@ public class Wordle : Game
 | |   `._____.'  | |
 | |              | |
 | '--------------' |
- '----------------'
-",
+ '----------------'",
 @"
  .----------------. 
 | .--------------. |
@@ -221,8 +229,7 @@ public class Wordle : Game
 | | |________.'  | |
 | |              | |
 | '--------------' |
- '----------------' 
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -234,8 +241,7 @@ public class Wordle : Game
 | | |_________|  | |
 | |              | |
 | '--------------' |
- '----------------' 
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -247,8 +253,7 @@ public class Wordle : Game
 | | |_____|      | |
 | |              | |
 | '--------------' |
- '----------------' 
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -260,8 +265,7 @@ public class Wordle : Game
 | |  `._____.'   | |
 | |              | |
 | '--------------' |
- '----------------' 
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -273,9 +277,7 @@ public class Wordle : Game
 | | |____||____| | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -287,10 +289,7 @@ public class Wordle : Game
 | |    |_____|   | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
-
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -302,9 +301,7 @@ public class Wordle : Game
 | |  `.___.'     | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -316,9 +313,7 @@ public class Wordle : Game
 | | |____||____| | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -330,9 +325,7 @@ public class Wordle : Game
 | |  |________|  | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -344,9 +337,7 @@ public class Wordle : Game
 | ||_____||_____|| |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .-----------------.
 | .--------------. |
@@ -358,9 +349,7 @@ public class Wordle : Game
 | ||_____|\____| | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -372,9 +361,7 @@ public class Wordle : Game
 | |   `.____.'   | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -386,9 +373,7 @@ public class Wordle : Game
 | |  |_____|     | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -400,9 +385,7 @@ public class Wordle : Game
 | |  `.___.\__|  | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -414,9 +397,7 @@ public class Wordle : Game
 | | |____| |___| | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -428,9 +409,7 @@ public class Wordle : Game
 | |  |_______.'  | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -442,10 +421,7 @@ public class Wordle : Game
 | |   |_____|    | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
-
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -457,9 +433,7 @@ public class Wordle : Game
 | |    `.__.'    | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -471,9 +445,7 @@ public class Wordle : Game
 | |     \_/      | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -485,9 +457,7 @@ public class Wordle : Game
 | |  |__/  \__|  | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -499,9 +469,7 @@ public class Wordle : Game
 | | |____||____| | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -513,9 +481,7 @@ public class Wordle : Game
 | |   |______|   | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 @"
  .----------------. 
 | .--------------. |
@@ -527,9 +493,7 @@ public class Wordle : Game
 | |  |________|  | |
 | |              | |
 | '--------------' |
- '----------------' 
-
-",
+ '----------------' ",
 
 
 
@@ -547,57 +511,8 @@ public class Wordle : Game
 
     };
             
-            
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 
 
