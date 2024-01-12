@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using System.Xml;
 
 namespace ConsoleGames.Games; // here use name of your project
 
@@ -27,7 +29,8 @@ public class Wordle : Game
         bool gameover = false;
         string input = null;
         string secretWord = readsecretword(level);
-        Point point = new Point(5, 5);
+        Point point = new Point(0, 0);
+        int count = 0;
 
 
 
@@ -46,12 +49,16 @@ public class Wordle : Game
 
         while (!gameover)
         {
+
+
+            point.X = 0;
+            int YKORD = count * 10;
+            count++;
             Console.SetWindowSize(1220, 1220);
             Console.ResetColor();
            // Console.WriteLine(secretWord); // Nur zum Testen um echten Spiel dann nichtmeht
             input = Console.ReadLine();
             input = input.ToUpper();
-
 
             if (input == secretWord)
             {
@@ -72,40 +79,33 @@ public class Wordle : Game
 
                     if (secretWord[bStab] == input[bStab]) // Richtige Positon
                     {
-                       // DrawChar(input[bStab], ConsoleColor.Green, ref point);
+                        DrawChar(input[bStab], ConsoleColor.Green, ref point);
                         tempFrequencies[input[bStab]]--; // Zähler runtermachen
-                       // point.X += 20;
-                       // point.Y += 20;
+                        point.X += 20;
+                        point.Y = YKORD;
                     }
                     else
                     {
                         if (secretWord.Contains(input[bStab]) && tempFrequencies[input[bStab]] > 1) // Falsche Position aber Buchstabe im Wort
                         {
-                           // Console.BackgroundColor = ConsoleColor.Yellow;
                             DrawChar(input[bStab], ConsoleColor.DarkYellow, ref point);
                             tempFrequencies[input[bStab]]--;
-                           // point.X += 20;
-                           // point.Y += 20;
+                            point.X += 20;
+                            point.Y = YKORD;
                         }
                         else // Buchstabe nicht im Wort oder Buchstabe schon zugeordnet
                         {
-                            //Console.BackgroundColor = ConsoleColor.Red;
                             DrawChar(input[bStab], ConsoleColor.Red, ref point);
-                            //Console.Write(input[bStab]);
-                           // point.X += 20;
-                           // point.Y += 20;
+                            point.X += 20;
+                            point.Y = YKORD;
                         }
-                    }
-
-                    if (bStab == secretWord.Length - 1) // Zeilen Abstand
-                    {
-                        Console.WriteLine("");
                     }
                 }
             }
         }
 
         return new Score();
+
     }
 
 
@@ -147,44 +147,25 @@ public class Wordle : Game
         private Point DrawChar(char c, ConsoleColor col, ref Point point)
         {
 
-
-
-            Console.ForegroundColor = col;
-
-           // Console.SetCursorPosition(point.X, point.Y);
-
-           // Console.Write(font[(int)c - 65]);
-
-            Console.ResetColor();
-
-
-
-        // Console.Write(font[(int)c-65]);
-
         string letter = (font[(int)c - 65]);
         string[] array1 = letter.Split('\n');
         for (int i = 0; i < array1.Length; i++)
         {
             Console.SetCursorPosition(point.X, point.Y);
+            Console.ForegroundColor = col;
             Console.WriteLine(array1[i]);
+            Console.ResetColor();
             point.Y++;
+
         }
-
-
-
-
-
-
-
-
-            return point;
-        }
+        return point;
+    }
 
 
         static string[] font =
         {
-
-@" .----------------.   
+@"
+.----------------.   
 | .--------------. |  
 | |      __      | |  
 | |     /  \     | |  
@@ -196,7 +177,8 @@ public class Wordle : Game
 | '--------------' |  
  '----------------'  ",
  @"
- .--------------. |
+.----------------.
+| .--------------. |
 | |   ______     | |
 | |  |_   _ \    | |
 | |    | |_) |   | |
