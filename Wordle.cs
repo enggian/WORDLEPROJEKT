@@ -41,11 +41,11 @@ public class Wordle : Game
         }
         else if (level == 2)
         {
-            lives = 16;
+            lives = 20;
         }
         else
         {
-            lives = 12;
+            lives = 18;
         }
         Console.WriteLine("Versuche das Wort zu erraten!");
 
@@ -63,9 +63,8 @@ public class Wordle : Game
         while (!gameover)
         {
             Console.SetCursorPosition(100, 0);
-            Console.Write("Leben:" + lives/4);
-            Console.SetCursorPosition(0,point.Y+1);
-            Console.WriteLine(secretWord);
+            Console.Write("Score:" + lives);
+            Console.SetCursorPosition(0, point.Y + 1);
             if (lives == 0)
             {
                 Console.Clear();
@@ -141,7 +140,7 @@ public class Wordle : Game
     {
         string[] wordsSimple = new string[] { "Hund", "Elfe", "Haus", "Auto", "Edel", "Fett", "Bube", "Buch", "Chef", "Brav", "Mond", "Baum", "Zeit", "Wind", "Brot", "Boot", "Lied", "Ball", "Kind", "Leid", "Wolf", "Gold", "Faul", "Kamm", "Tuch" };
         string[] wordsMedium = new string[] { "Aachs", "Aarau", "uboot", "haben", "seine", "geben", "Abgas", "Armut", "Blume", "Hafen", "Welle", "Nacht", "Stein", "Faden", "Apfel", "Tisch" };
-        string[] wordsAdvanced = new string[] { "Blumen", "Sorgen", "Träume", "Frucht", "Muster","Pflege", "Reifen","Winter", "Sommer", "Farben", "Kuchen", "Lachen", "Stille", "Wunder", "Zirkus", "Schnee" };
+        string[] wordsAdvanced = new string[] { "Blumen", "Sorgen", "Träume", "Frucht", "Muster", "Pflege", "Reifen", "Winter", "Sommer", "Farben", "Kuchen", "Lachen", "Stille", "Wunder", "Zirkus", "Schnee" };
 
         Random rand = new Random();
         string secretWord = "";
@@ -213,7 +212,7 @@ public class Wordle : Game
 
             }
             input = Console.ReadLine();
-            input= input.ToUpper();
+            input = input.ToUpper();
         }
 
     }
@@ -238,7 +237,8 @@ public class Wordle : Game
 
 
     private static void GameWon()
-    {;
+    {
+        ;
         Thread.Sleep(50);
         Console.Write(@"
 ___  _ ____  _       _      ____  _     
@@ -250,7 +250,7 @@ ___  _ ____  _       _      ____  _
 ");
 
         Thread.Sleep(200);
- 
+
     }
 
 
@@ -266,7 +266,7 @@ ___  _ ____  _       _      ____  _
 ");
         Console.SetCursorPosition(0, 8);
         Console.Write("The secret word was " + secretWord);
-        
+
     }
 
 
@@ -631,8 +631,8 @@ ___  _ ____  _       _      ____  _
 
 
 }
-            
-    
+
+
 
 
 
